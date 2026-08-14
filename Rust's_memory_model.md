@@ -203,3 +203,144 @@ String
   ├── reference     → stack
   └── characters    → static memory
 ```
+
+7. Vec<T> works similarly to String
+
+Consider:
+
+let v = vec![10, 20, 30, 40];
+
+Vec<T> is a growable array.
+
+Conceptually:
+```
+Stack                         Heap
+
+
+v
+┌───────────────┐
+│ ptr ────────────────┐
+│ length = 4     │    │
+│ capacity = 4   │    │
+└───────────────┘     │
+                      ▼
+                ┌────┬────┬────┬────┐
+                │ 10 │ 20 │ 30 │ 40 │
+                └────┴────┴────┴────┘
+```
+So again:
+
+Vec structure → stack
+Vec elements  → heap
+8. What about HashMap?
+
+For:
+
+let mut map = HashMap::new();
+
+
+map.insert("Alice", 25);
+map.insert("Bob", 30);
+
+The HashMap value itself is a small structure, while its dynamically allocated buckets/table are on the heap.
+
+Conceptually:
+```
+Stack
+┌───────────────┐
+│ HashMap       │
+│ metadata      │
+│ pointer ───────────────┐
+└───────────────┘        │
+                         ▼
+                    Heap
+              ┌───────────────┐
+              │ hash buckets  │
+              │ Alice → 25    │
+              │ Bob   → 30    │
+              └───────────────┘
+```
+9. What about structs?
+
+Suppose:
+
+struct Person {
+    age: u32,
+    active: bool,
+}
+
+
+let p = Person {
+    age: 22,
+    active: true,
+};
+
+The Person is normally stored directly on the stack:
+```
+Stack
+p
+┌──────────────┐
+│ age = 22     │
+│ active=true  │
+└──────────────┘
+```
+But if:
+
+let p = Box::new(Person {
+    age: 22,
+    active: true,
+});
+
+then:
+```
+Stack                 Heap
+
+
+p ─────────────────▶ Person
+                     ┌──────────┐
+                     │ age = 22 │
+                     │ true     │
+                     └──────────┘
+```
+
+10. What about structs containing String?
+
+This is where things become interesting.
+
+struct Person {
+    name: String,
+    age: u32,
+}
+
+
+let p = Person {
+    name: String::from("Alice"),
+    age: 22,
+};
+
+The Person itself can be on the stack:
+
+```
+Stack
+
+Person
+┌─────────────────────────┐
+│ name                    │
+│ ┌─────────────────────┐ │
+│ │ ptr ────────────────┼──────┐
+│ │ len = 5             │ │    │
+│ │ capacity = 5        │ │    │
+│ └─────────────────────┘ │    │
+│                         │    │
+│ age = 22                │    │
+└─────────────────────────┘    │
+                               ▼
+                              Heap
+                         ┌───────────┐
+                         │ Alice     │
+                         └───────────┘
+```
+
+The struct doesn't necessarily contain the actual characters directly.
+
+It contains the String descriptor, which points to the heap allocation.
