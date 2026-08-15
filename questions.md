@@ -1,6 +1,7 @@
 Rust Fundamentals
 
 1. Explain ownership, borrowing, and the borrow checker. Why does Rust not need a garbage collector?
+
 Rust manages memory through ownership, borrowing, and the borrow checker, so it doesn't need a garbage collector.
 
 In Rust, every value has an owner, and there can only be one owner at a time. When the owner goes out of scope, Rust automatically frees the memory. For example, if a String goes out of scope, its heap memory is released automatically.
@@ -54,3 +55,57 @@ ZK Theory Fundamentals
 20. What is a witness in a ZK proof system?
 
 21. What's the difference between proving knowledge of a value vs. proving a statement about a value?
+
+Cryptographic Primitives
+
+22. What is a finite field, and why do ZK systems operate over prime fields?
+
+23. Explain elliptic curve pairings (bilinear maps) and why they're used in SNARK verification.
+
+24. What is a polynomial commitment scheme? Explain KZG commitments at a high level.
+
+25. What is the FRI protocol, and how does it relate to STARKs?
+
+26. Explain Merkle trees and their role in STARK proofs / commitment schemes.
+
+27. What is the Fiat-Shamir transform, and what security assumption does it rely on (random oracle model)?
+
+28. Why is constant-time arithmetic important in cryptographic code, and how would you avoid timing side-channels in Rust?
+
+Proof Systems in Practice
+
+29. Compare Groth16, PLONK, and Halo2 in terms of setup, flexibility, and proof size.
+
+30. What is a "gate" in PLONK/Halo2, and how do custom gates improve efficiency over generic R1CS?
+
+31. What is lookup argument (e.g., in Halo2/Plonky2), and what problem does it solve?
+
+32. What is recursive proof composition, and why is it useful (e.g., in rollups)?
+
+33. How does IPA (Inner Product Argument) differ from KZG as a commitment scheme?
+
+Rust + ZK Ecosystem 
+
+34. Have you worked with arkworks, halo2, plonky2, or bellman? Walk through how you'd define a simple circuit (e.g., proving knowledge of a hash preimage) in one of them.
+
+35. How do these libraries use Rust's trait system to abstract over different elliptic curves / fields (e.g., PrimeField, Field traits)?
+
+36. Why is Rust a popular language for ZK tooling compared to, say, Python or JS? (Performance, memory safety, no GC pauses during heavy field arithmetic, WASM compilation.)
+
+37. How would you optimize a Rust ZK prover for performance — parallelism (rayon), SIMD, GPU offloading (e.g., via arkworks-gpu or custom CUDA bindings)?
+
+38. How do you handle serialization of field elements/curve points in Rust (e.g., serde, canonical vs. non-canonical encoding)?
+
+39. What testing strategies do you use for circuits — unit tests on constraints, property-based testing, differential testing against a reference implementation?
+
+40. How would you structure a Cargo workspace for a ZK project (e.g., separating field arithmetic, circuit logic, and prover/verifier crates)?
+
+System Design / Applied
+
+41. Design a simple ZK circuit in Rust that proves you know a preimage to a hash without revealing it. What constraints would you write?
+
+42. How would you prove a Merkle tree membership in zero-knowledge?
+
+43. What are common performance bottlenecks in a ZK prover, and how would you profile and fix them in Rust?
+
+44. How does a zk-rollup use SNARKs to compress transaction validity proofs, and what's Rust's role in most rollup prover stacks?
